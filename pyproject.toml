@@ -3,7 +3,8 @@ name = "student-attendance-tracker"
 version = "1.0.0"
 requires-python = ">=3.12,<3.15"
 dependencies = [
-    "Flask==3.1.2"
+    "Flask==3.1.2",
+    "libsql-client==0.3.1"
 ]
 
 [tool.vercel]
