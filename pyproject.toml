@@ -7,5 +7,4 @@ dependencies = [
 ]
 
 [tool.vercel]
-framework = "flask"
-entrypoint = "application.py"
+entrypoint = "application:app"
