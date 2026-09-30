@@ -1,94 +1,87 @@
 import os
 import sqlite3
-import libsql_client
+import libsql
 
 
-# -------------------------------------------------
-# Local SQLite connection
-# -------------------------------------------------
-def get_local_connection():
-    conn = sqlite3.connect("attendance.db")
-    conn.row_factory = sqlite3.Row
-    return conn
+DATABASE = "attendance.db"
 
 
-# -------------------------------------------------
-# Turso result wrapper
-# -------------------------------------------------
-class TursoResult:
-    def __init__(self, result):
-        self.columns = result.columns
-        self.rows = result.rows
+class TursoCursor:
+    def __init__(self, cursor):
+        self.cursor = cursor
 
     def fetchone(self):
-        if not self.rows:
+        row = self.cursor.fetchone()
+
+        if row is None:
             return None
 
-        row = self.rows[0]
+        columns = [column[0] for column in self.cursor.description]
 
         return {
             column: value
-            for column, value in zip(self.columns, row)
+            for column, value in zip(columns, row)
         }
 
     def fetchall(self):
+        rows = self.cursor.fetchall()
+
+        if not rows:
+            return []
+
+        columns = [column[0] for column in self.cursor.description]
+
         return [
             {
                 column: value
-                for column, value in zip(self.columns, row)
+                for column, value in zip(columns, row)
             }
-            for row in self.rows
+            for row in rows
         ]
 
 
-# -------------------------------------------------
-# Turso connection wrapper
-# -------------------------------------------------
 class TursoConnection:
     def __init__(self):
         url = os.environ.get("TURSO_DATABASE_URL")
         token = os.environ.get("TURSO_AUTH_TOKEN")
 
-        if not url:
-            raise RuntimeError("TURSO_DATABASE_URL is missing.")
+        if not url or not token:
+            raise RuntimeError(
+                "TURSO_DATABASE_URL or TURSO_AUTH_TOKEN is missing."
+            )
 
-        if not token:
-            raise RuntimeError("TURSO_AUTH_TOKEN is missing.")
-
-        self.client = libsql_client.create_client_sync(
-            url,
+        self.conn = libsql.connect(
+            database=url,
             auth_token=token
         )
 
     def execute(self, query, parameters=()):
-        result = self.client.execute(query, parameters)
-        return TursoResult(result)
+        cursor = self.conn.execute(query, parameters)
+        return TursoCursor(cursor)
 
     def commit(self):
-        # Turso executes statements remotely.
-        pass
+        self.conn.commit()
 
     def close(self):
-        self.client.close()
+        self.conn.close()
 
 
-# -------------------------------------------------
-# Choose database
-# -------------------------------------------------
+def get_local_connection():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
 def get_db_connection():
-    turso_url = os.environ.get("TURSO_DATABASE_URL")
-    turso_token = os.environ.get("TURSO_AUTH_TOKEN")
-
-    if turso_url and turso_token:
+    if (
+        os.environ.get("TURSO_DATABASE_URL")
+        and os.environ.get("TURSO_AUTH_TOKEN")
+    ):
         return TursoConnection()
 
-    # Local development
     return get_local_connection()
 
 
-# -------------------------------------------------
-# Initialize database tables
-# -------------------------------------------------
 def initialize_database():
     conn = get_db_connection()
 
