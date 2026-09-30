@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Record Attendance</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav><h2>Student Attendance Tracker</h2><div>
+<a href="{{ url_for('index') }}">Dashboard</a>
+<a href="{{ url_for('students') }}">Students</a>
+<a href="{{ url_for('attendance') }}">Attendance</a>
+<a href="{{ url_for('reports') }}">Reports</a>
+</div></nav>
+<div class="container">
+<h1>Record Attendance</h1>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for category, message in messages %}<div class="message {{ category }}">{{ message }}</div>{% endfor %}
+{% endwith %}
+<form method="POST">
+<div class="date-selector">
+<label>Select Date:</label>
+<input type="date" name="date" value="{{ selected_date }}" required>
+</div>
+<table>
+<thead><tr><th>Roll Number</th><th>Name</th><th>Attendance</th></tr></thead>
+<tbody>
+{% for student in students %}
+{% set status = existing_attendance.get(student.id, 'Absent') %}
+<tr>
+<td>{{ student.roll_number }}</td><td>{{ student.name }}</td>
+<td>
+<label class="radio"><input type="radio" name="status_{{ student.id }}" value="Present" {% if status == 'Present' %}checked{% endif %}> Present</label>
+<label class="radio"><input type="radio" name="status_{{ student.id }}" value="Absent" {% if status == 'Absent' %}checked{% endif %}> Absent</label>
+</td>
+</tr>
+{% else %}
+<tr><td colspan="3">Add students before recording attendance.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+{% if students %}<button type="submit" class="save-button">Save Attendance</button>{% endif %}
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,34 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f4f6f8; color: #222; }
+nav { background: #1f2937; color: white; padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; }
+nav h2 { font-size: 22px; }
+nav a { color: white; text-decoration: none; margin-left: 20px; font-size: 15px; }
+nav a:hover { text-decoration: underline; }
+.container { width: 90%; max-width: 1100px; margin: 40px auto; }
+h1 { margin-bottom: 25px; } h2 { margin-bottom: 20px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 40px; }
+.card { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08); text-align: center; }
+.card h3 { color: #555; margin-bottom: 15px; } .card p { font-size: 32px; font-weight: bold; }
+.dashboard-info, .form-card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,.08); margin-bottom: 30px; }
+.buttons { display: flex; gap: 15px; flex-wrap: wrap; }
+.button, button { background: #2563eb; color: white; padding: 11px 18px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 14px; }
+.button:hover, button:hover { background: #1d4ed8; }
+form input { padding: 11px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px; margin-bottom: 10px; }
+table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 2px 8px rgba(0,0,0,.08); border-radius: 8px; overflow: hidden; }
+th, td { padding: 14px; border-bottom: 1px solid #ddd; text-align: center; }
+th { background: #1f2937; color: white; } tr:hover { background: #f8fafc; }
+.delete-button { background: #dc2626; } .delete-button:hover { background: #b91c1c; }
+.save-button { margin-top: 20px; padding: 13px 25px; }
+.date-selector { background: white; padding: 20px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+.date-selector input { padding: 10px; margin-left: 10px; }
+.radio { margin-right: 15px; }
+.message { padding: 12px; border-radius: 6px; margin-bottom: 20px; }
+.success { background: #dcfce7; color: #166534; } .error { background: #fee2e2; color: #991b1b; }
+.low-attendance { background: #fee2e2; }
+.danger { color: #dc2626; font-weight: bold; } .warning { color: #d97706; font-weight: bold; } .good { color: #16a34a; font-weight: bold; }
+.description { margin-bottom: 20px; color: #555; }
+@media (max-width: 700px) {
+nav { flex-direction: column; gap: 15px; text-align: center; }
+nav a { display: inline-block; margin: 5px; }
+table { font-size: 13px; } th, td { padding: 8px; }
+}

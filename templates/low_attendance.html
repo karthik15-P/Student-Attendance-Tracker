@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance Reports</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav><h2>Student Attendance Tracker</h2><div>
+<a href="{{ url_for('index') }}">Dashboard</a>
+<a href="{{ url_for('students') }}">Students</a>
+<a href="{{ url_for('attendance') }}">Attendance</a>
+<a href="{{ url_for('reports') }}">Reports</a>
+</div></nav>
+<div class="container">
+<h1>Attendance Reports</h1>
+<p class="description">Students with attendance below 75% are highlighted.</p>
+<table>
+<thead><tr><th>Roll Number</th><th>Name</th><th>Total Classes</th><th>Present</th><th>Absent</th><th>Attendance %</th><th>Status</th></tr></thead>
+<tbody>
+{% for student in students %}
+<tr {% if student.percentage < 75 %}class="low-attendance"{% endif %}>
+<td>{{ student.roll_number }}</td><td>{{ student.name }}</td>
+<td>{{ student.total_classes }}</td><td>{{ student.present_count }}</td><td>{{ student.absent_count }}</td>
+<td><strong>{{ student.percentage }}%</strong></td>
+<td>
+{% if student.percentage < 75 %}<span class="danger">Low Attendance</span>
+{% elif student.percentage < 85 %}<span class="warning">Needs Improvement</span>
+{% else %}<span class="good">Good</span>{% endif %}
+</td>
+</tr>
+{% else %}
+<tr><td colspan="7">No students found.</td></tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+</body>
+</html>
